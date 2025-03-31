@@ -1,75 +1,75 @@
-// Simple Attractive VR Room Scene
-
 window.addEventListener('DOMContentLoaded', async function(){
     const canvas = document.getElementById('renderCanvas');
     const engine = new BABYLON.Engine(canvas, true);
     const scene = new BABYLON.Scene(engine);
 
-    // Background
-    scene.clearColor = new BABYLON.Color3(0.9, 0.95, 1); // very light blue
+    // Background Color
+    scene.clearColor = new BABYLON.Color3(0.9, 0.95, 1);
 
     // Camera
     const camera = new BABYLON.ArcRotateCamera("camera",
         BABYLON.Tools.ToRadians(45),
         BABYLON.Tools.ToRadians(70),
-        18, BABYLON.Vector3.Zero(), scene);
+        20, new BABYLON.Vector3(0,2,0), scene);
     camera.attachControl(canvas, true);
 
-    // Light
+    // Lighting
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-    light.intensity = 0.9;
+    light.intensity = 1.0;
 
-    // Floor (Light Gray)
-    const floor = BABYLON.MeshBuilder.CreateGround("floor", { width: 16, height: 16 }, scene);
+    // Floor
+    const floor = BABYLON.MeshBuilder.CreateGround("floor", { width: 20, height: 20 }, scene);
     const floorMat = new BABYLON.StandardMaterial("floorMat", scene);
-    floorMat.diffuseColor = new BABYLON.Color3(0.85, 0.85, 0.85);
+    floorMat.diffuseColor = new BABYLON.Color3(0.7, 0.7, 0.7);
     floor.material = floorMat;
 
-    // Back Wall
-    const backWall = BABYLON.MeshBuilder.CreatePlane("backWall", { width: 16, height: 6 }, scene);
-    backWall.position.z = -8;
-    backWall.position.y = 3;
+    // Ceiling
+    const ceiling = BABYLON.MeshBuilder.CreateGround("ceiling", { width: 20, height: 20 }, scene);
+    ceiling.rotation.x = Math.PI;
+    ceiling.position.y = 6;
+    const ceilingMat = new BABYLON.StandardMaterial("ceilingMat", scene);
+    ceilingMat.diffuseColor = new BABYLON.Color3(0.9, 0.9, 0.9);
+    ceiling.material = ceilingMat;
+
+    // Walls
     const wallMat = new BABYLON.StandardMaterial("wallMat", scene);
-    wallMat.diffuseColor = new BABYLON.Color3(0.95, 0.95, 0.95); // soft white
-    backWall.material = wallMat;
+    wallMat.diffuseColor = new BABYLON.Color3(0.95, 0.95, 0.95);
 
-    // Left Wall
-    const leftWall = BABYLON.MeshBuilder.CreatePlane("leftWall", { width: 16, height: 6 }, scene);
-    leftWall.rotation.y = Math.PI / 2;
-    leftWall.position.x = -8;
-    leftWall.position.y = 3;
-    leftWall.material = wallMat;
+    const wallPositions = [
+        {x:0, y:3, z:-10, ry:0},
+        {x:0, y:3, z:10, ry:0},
+        {x:-10, y:3, z:0, ry:Math.PI/2},
+        {x:10, y:3, z:0, ry:Math.PI/2}
+    ];
 
-    // Right Wall
-    const rightWall = BABYLON.MeshBuilder.CreatePlane("rightWall", { width: 16, height: 6 }, scene);
-    rightWall.rotation.y = -Math.PI / 2;
-    rightWall.position.x = 8;
-    rightWall.position.y = 3;
-    rightWall.material = wallMat;
+    wallPositions.forEach(pos => {
+        const wall = BABYLON.MeshBuilder.CreatePlane("wall", {width:20, height:6}, scene);
+        wall.position.set(pos.x, pos.y, pos.z);
+        wall.rotation.y = pos.ry;
+        wall.material = wallMat;
+    });
 
-    // Desk
-    const desk = BABYLON.MeshBuilder.CreateBox("desk", { width: 2.5, height: 1, depth: 1 }, scene);
-    desk.position.y = 0.5;
-    desk.position.z = -3;
-    const deskMat = new BABYLON.StandardMaterial("deskMat", scene);
-    deskMat.diffuseColor = new BABYLON.Color3(0.6, 0.6, 0.9); // soft blue
-    desk.material = deskMat;
+    // Table
+    const table = BABYLON.MeshBuilder.CreateBox("table", { width:3, height:0.3, depth:2 }, scene);
+    table.position.set(0, 0.15, -3);
+    const tableMat = new BABYLON.StandardMaterial("tableMat", scene);
+    tableMat.diffuseColor = new BABYLON.Color3(0.6, 0.4, 0.2);
+    table.material = tableMat;
 
-    // Computer
-    const computer = BABYLON.MeshBuilder.CreateBox("computer", { width: 0.8, height: 0.5, depth: 0.1 }, scene);
-    computer.position.y = 1.25;
-    computer.position.z = -3;
-    const computerMat = new BABYLON.StandardMaterial("computerMat", scene);
-    computerMat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1); // dark gray
-    computer.material = computerMat;
+    // Fire Extinguisher (Simple Cylinder)
+    const extinguisher = BABYLON.MeshBuilder.CreateCylinder("extinguisher", {height:1, diameter:0.3}, scene);
+    extinguisher.position.set(2, 0.5, -2);
+    const extinguisherMat = new BABYLON.StandardMaterial("extinguisherMat", scene);
+    extinguisherMat.diffuseColor = new BABYLON.Color3(1, 0, 0);
+    extinguisher.material = extinguisherMat;
 
-    // Chair
-    const chair = BABYLON.MeshBuilder.CreateCylinder("chair", { diameter: 0.8, height: 0.5 }, scene);
-    chair.position.y = 0.25;
-    chair.position.z = -1.5;
-    const chairMat = new BABYLON.StandardMaterial("chairMat", scene);
-    chairMat.diffuseColor = new BABYLON.Color3(0.6, 0.4, 0.3); // light brown
-    chair.material = chairMat;
+    // Label (Mentor sphere placeholder)
+    const mentor = BABYLON.MeshBuilder.CreateSphere("mentor", { diameter: 0.4 }, scene);
+    mentor.position.set(3, 0.5, -5);
+    const mentorMat = new BABYLON.StandardMaterial("mentorMat", scene);
+    mentorMat.diffuseColor = new BABYLON.Color3(0.9, 0.4, 0.4);
+    mentor.material = mentorMat;
+
     // Start a WebXR session (immersive-ar, specifically)
     const xr = await scene.createDefaultXRExperienceAsync({
         uiOptions: {
@@ -82,14 +82,7 @@ window.addEventListener('DOMContentLoaded', async function(){
         optionalFeatures: true
     });
 
-    // Mentor Sphere
-    const mentor = BABYLON.MeshBuilder.CreateSphere("mentor", { diameter: 0.5 }, scene);
-    mentor.position.set(3, 0.5, -2);
-    const mentorMat = new BABYLON.StandardMaterial("mentorMat", scene);
-    mentorMat.diffuseColor = new BABYLON.Color3(0.9, 0.4, 0.4);
-    mentor.material = mentorMat;
-
-    // Render
+    // Render loop
     engine.runRenderLoop(() => scene.render());
     window.addEventListener('resize', () => engine.resize());
 });
