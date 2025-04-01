@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', function(){
+window.addEventListener('DOMContentLoaded', async function(){
     const canvas = document.getElementById('renderCanvas');
     const engine = new BABYLON.Engine(canvas, true);
     const scene = new BABYLON.Scene(engine);
@@ -72,6 +72,12 @@ floor.material = floorMat;
     const mentorMat = new BABYLON.StandardMaterial("mentorMat", scene);
     mentorMat.diffuseColor = new BABYLON.Color3(0.9, 0.4, 0.4);
     mentor.material = mentorMat;
+
+    // ---------- XR Setup ----------
+    const xr = await scene.createDefaultXRExperienceAsync({
+        uiOptions: { sessionMode: "immersive-ar", referenceSpaceType: "local-floor" },
+        optionalFeatures: true
+    });
 
     // Render loop
     engine.runRenderLoop(() => scene.render());
