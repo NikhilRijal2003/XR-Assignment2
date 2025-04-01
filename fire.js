@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', async function(){
 // Floor with Texture
 const floor = BABYLON.MeshBuilder.CreateGround("floor", { width: 20, height: 20 }, scene);
 const floorMat = new BABYLON.StandardMaterial("floorMat", scene);
-floorMat.diffuseTexture = new BABYLON.Texture("Assets/Floor.jpg", scene); // <-- use BABYLON.Texture not Assets
+floorMat.diffuseTexture = new BABYLON.Texture("Assets/Floor.jpg", scene); 
 floorMat.diffuseTexture.uScale = 4;
 floorMat.diffuseTexture.vScale = 4;
 floor.material = floorMat;
